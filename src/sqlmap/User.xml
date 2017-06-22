@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace：命名空间，用于隔离sql，还有一个很重要的作用，后面会讲 -->
+<mapper namespace="test">
+   <select id="findUserById" parameterType="Integer" 
+    resultType = "com.yunlin.pojo.User">
+      SELECT * FROM user WHERE id = #{value}
+   </select>
+   
+   <select id="findAll" resultType="com.yunlin.pojo.User">
+      SELECT * FROM user
+   </select>
+   <insert id="insert" parameterType ="com.yunlin.pojo.User">
+      INSERT INTO user(id,username,sex,birthday,address) VALUES (#{id},#{username},#{sex},#{birthday},#{address})
+   </insert>
+   
+   <insert id="insertAndBackId" parameterType ="com.yunlin.pojo.User"> 
+    <selectKey keyProperty="id" resultType="Integer" order="AFTER">
+       select LAST_INSERT_ID()
+    </selectKey>
+      INSERT INTO user(username,sex,birthday,address) VALUES (#{username},#{sex},#{birthday},#{address})
+   </insert>
+    
+    <select id="findUserByUsername" parameterType="String" resultType="com.yunlin.pojo.User">
+      SELECT * FROM user WHERE username like '%${value}%'
+   </select>
+   <update id="update">
+      update user set username=#{username}, address=#{address} where id = #{id};
+   </update>
+  
+  <delete id="delete" parameterType="Integer">
+     delete from user where id = #{value}
+  </delete>
+</mapper>
