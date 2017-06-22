@@ -11,6 +11,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
+import com.yunlin.mapper.UserMapper;
 import com.yunlin.pojo.User;
 
 
@@ -116,7 +117,7 @@ public class MybatisTest {
         
         //执行sql语句
         User user = new User( "Tommy2", "男", new Date(), "zhejiang");
-        sqlSession.insert("test.insertAndBackId", user);
+        sqlSession.insert("com.yunlin.mapper.UserMapper.insertAndBackId", user);
       
         sqlSession.commit();
         
@@ -140,7 +141,7 @@ public class MybatisTest {
         //执行sql语句
         User user = new User( "Tommy2", "男", new Date(), "zhejiang");
         user.setId(20170622);
-        sqlSession.update("test.update", user);
+        sqlSession.update("com.yunlin.mapper.UserMapper.update", user);
       
         sqlSession.commit();
         
@@ -148,7 +149,7 @@ public class MybatisTest {
     /*
      * 
      */
-    @Test
+    
     public void testMybatis6() throws Exception{
     	//加载核心配置文件
     	String resource = "sqlMapConfig.xml";
@@ -163,9 +164,30 @@ public class MybatisTest {
         //执行sql语句
         User user = new User( "Tommy2", "男", new Date(), "zhejiang");
         user.setId(20170622);
-        sqlSession.delete("test.delete",user.getId());
+        sqlSession.delete("com.yunlin.mapper.UserMapper.delete",user.getId());
       
         sqlSession.commit();
         
+    }
+    /*
+     * 测试mapper动态代理开发
+     */
+    @Test
+    public void testMapper() throws Exception{
+    	//加载核心配置文件
+    	String resource = "sqlMapConfig.xml";
+        InputStream in = Resources.getResourceAsStream(resource);
+        
+    	//创建SqlSessionFactory
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
+    
+        //创建SqlSession
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        
+        User user = userMapper.findUserById(10);
+        
+        System.out.println(user);
     }
 }
